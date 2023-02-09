@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Number Input and Display</title>
+  </head>
+  <body>
+    <input type="number" id="numberInput1" placeholder="amount bought in rands">
+    <input type="number" id="numberInput2" placeholder="unit bought">
+    <select id="unitSelect1">
+      <option value="g">grams</option>
+      <option value="kg">kilograms</option>
+      <option value="ml">mililitres</option>
+      <option value="l">litres</option>
+    </select>
+    <input type="number" id="numberInput3" placeholder="unit used">
+    <select id="unitSelect2">
+      <option value="g">grams</option>
+      <option value="kg">kilograms</option>
+      <option value="ml">mililitres</option>
+      <option value="l">litres</option>
+    </select>
+    <button onclick="addData()">Add </button>
+    <button onclick="undoData()">Undo</button>
+    <button onclick="resetData()">Reset</button>
+    <p id="display"></p>
+    <input type="number" id="numberInput4" placeholder="Number of items">
+    <button onclick="calculateCost()">Calculate</button>
+    <p id="answer"></p>
+
+    <script>
+      var data = [];
+      function addData() {
+        var number1 = document.getElementById("numberInput1").value;
+        var number2 = document.getElementById("numberInput2").value;
+        var number3 = document.getElementById("numberInput3").value;
+        var unit1 = document.getElementById("unitSelect1").value;
+        var unit2 = document.getElementById("unitSelect2").value;
+        if (unit1 === "kg") {
+          const convertionFactor = 1000;
+          number2 = number2 * convertionFactor
+          unit1 = "g"
+        } if (unit1 === "l") {
+          const convertionFactor = 1000;
+          number2 = number2 * convertionFactor
+          unit1 = "ml"
+        } if (unit2 === "kg") {
+          const convertionFactor = 1000;
+          number3 = number3 * convertionFactor
+          unit2 = "g"
+        } if (unit2 === "l") {
+          const convertionFactor = 1000;
+          number3 = number3 * convertionFactor
+          unit2 = "ml"
+        }
+        data.push({num1: number1, num2: number2, num3: number3, unit1: unit1, unit2: unit2});
+        document.getElementById("display").innerHTML = data
+          .map(d => `R${d.num1} for ${d.num2} ${d.unit1}, used ${d.num3} ${d.unit2}`)
+          .join("<br>");
+        document.getElementById("numberInput1").value = "";
+        document.getElementById("numberInput2").value = "";
+        document.getElementById("numberInput3").value = "";
+        document.getElementById("unitSelect1").value = "g";
+        document.getElementById("unitSelect2").value = "g";
+      }
+      function undoData() {
+        data.pop();
+        document.getElementById("display").innerHTML = data
+          .map(d => `R${d.num1} for ${d.num2} ${d.unit1}, used ${d.num3} ${d.unit2}`)
+          .join("<br>");
+      }
+      function resetData() {
+        data = [];
+        document.getElementById("display").innerHTML = "";
+        document.getElementById("numberInput1").value = "";
+        document.getElementById("numberInput2").value = "";
+        document.getElementById("numberInput3").value = "";
+        document.getElementById("unitSelect1").value = "g";
+        document.getElementById("unitSelect2").value = "g";
+      }
+      function calculateCost() {
+        extractedData = []
+        for (var i = 0; i < data.length; i++) {
+          extractedData.push({num1: data[i].num1, num2: data[i].num2, num3: data[i].num3});
+        }
+        var x = extractedData.reduce(function(accumulator, currentValue) {
+          return accumulator + (parseInt(currentValue.num1) * parseInt(currentValue.num3) / parseInt(currentValue.num3));
+        }, 0);
+        var number4 = document.getElementById("numberInput4").value;
+        var sum = x/number4
+        document.getElementById("answer").innerHTML = "Sum of extracted data: " + sum;
+      }
+    </script>
+  </body>
+</html>
+
